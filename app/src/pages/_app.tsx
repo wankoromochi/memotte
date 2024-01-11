@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import { initializeFirebaseApp } from '@src/lib/firebase/firebase'
 import { getApp } from 'firebase/app'
+import '../globals.css'
 
 initializeFirebaseApp()
 
