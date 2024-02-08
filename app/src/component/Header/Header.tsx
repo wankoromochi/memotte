@@ -1,5 +1,4 @@
 import { Fragment, useState } from 'react'
-import { useRouter } from 'next/router'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
   ArrowPathIcon,
@@ -20,6 +19,8 @@ import { FirebaseError } from '@firebase/util'
 import { getAuth, signOut } from 'firebase/auth'
 
 import { useAuthContext } from '@src/feature/auth/provider/AuthProvider'
+import { Navigate } from '@src/component/Navigate/Navigate'
+import { useRouter } from '@src/hooks/useRouter/useRouter'
 
 /** メニュー配列 */
 // TOOD: 内容修正
@@ -75,7 +76,7 @@ export const Header = () => {
     try {
       const auth = getAuth()
       await signOut(auth)
-      push('/signin')
+      push((path) => path.signin.$url())
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e)
@@ -112,7 +113,7 @@ export const Header = () => {
               </button>
             </div>
             <Popover.Group className="hidden lg:flex lg:gap-x-12">
-              <Popover className="relative">
+              {/* <Popover className="relative">
                 <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
                   Product
                   <ChevronDownIcon
@@ -175,26 +176,18 @@ export const Header = () => {
                     </div>
                   </Popover.Panel>
                 </Transition>
-              </Popover>
+              </Popover> */}
 
-              <a
-                href="#"
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                Features
-              </a>
-              <a
-                href="#"
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                Marketplace
-              </a>
-              <a
-                href="#"
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                Company
-              </a>
+              <Navigate href={(path) => path.$url()}>
+                <p className="text-sm font-semibold leading-6 text-gray-900">
+                  Home
+                </p>
+              </Navigate>
+              <Navigate href={(path) => path.chat.$url()}>
+                <p className="text-sm font-semibold leading-6 text-gray-900">
+                  Chat
+                </p>
+              </Navigate>
             </Popover.Group>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end">
               <button
