@@ -1,7 +1,9 @@
-import { FormEvent, useState, useEffect } from 'react'
+import { FormEvent, useState, useEffect, useRef } from 'react'
 
 import { getDatabase, onChildAdded, push, ref } from '@firebase/database'
 import { FirebaseError } from '@firebase/util'
+
+import { AuthGuard } from '@src/component/AuthGuard/AuthGuard'
 
 type MessageProps = {
   message: string
@@ -31,6 +33,8 @@ const Message = ({ message }: MessageProps) => {
 }
 
 export const Page = () => {
+  const messagesElementRef = useRef<HTMLDivElement | null>(null)
+
   const [message, setMessage] = useState<string>('')
   const [chats, setChats] = useState<{ message: string }[]>([])
 
@@ -79,40 +83,52 @@ export const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  /* スクロール処理 */
+  useEffect(() => {
+    messagesElementRef.current?.scrollTo({
+      top: messagesElementRef.current.scrollHeight,
+    })
+  }, [chats])
+
   return (
     <>
-      <div className="w-full max-w-xl mx-auto mt-8">
-        <h1>チャット</h1>
-        <div className="flex flex-col bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 h-80 overflow-y-auto">
-          {chats.map((chat, index) => (
-            <Message message={chat.message} key={`ChatMessage_${index}`} />
-          ))}
-        </div>
+      <AuthGuard>
+        <div className="w-full max-w-xl mx-auto mt-8">
+          <h1>チャット</h1>
+          <div
+            className="flex flex-col bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 h-80 overflow-y-auto"
+            ref={messagesElementRef}
+          >
+            {chats.map((chat, index) => (
+              <Message message={chat.message} key={`ChatMessage_${index}`} />
+            ))}
+          </div>
 
-        <form
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-          onSubmit={handleSendMessage}
-        >
-          <div className="mb-4">
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="chat"
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="チャット"
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-              送信
-            </button>
-          </div>
-        </form>
-      </div>
+          <form
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            onSubmit={handleSendMessage}
+          >
+            <div className="mb-4">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="chat"
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="チャット"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                送信
+              </button>
+            </div>
+          </form>
+        </div>
+      </AuthGuard>
     </>
   )
 }

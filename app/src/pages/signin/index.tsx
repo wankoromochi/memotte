@@ -2,6 +2,8 @@ import { FormEvent, useState } from 'react'
 import { useRouter } from 'next/router'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
+import { Navigate } from '@src/component/Navigate/Navigate'
+
 export const Page = () => {
   const { push } = useRouter()
 
@@ -98,13 +100,22 @@ export const Page = () => {
               placeholder="******************"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-center items-center justify-between">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               ログイン
             </button>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-sm">
+              新規アカウント作成は
+              <Navigate href={(path) => path.signup.$url()}>
+                <p className="inline text-blue-400">こちら</p>
+              </Navigate>
+            </p>
           </div>
         </form>
       </div>

@@ -7,7 +7,6 @@ type Props = {
 }
 
 export const AuthGuard = ({ children }: Props) => {
-  console.log(children)
   const { user } = useAuthContext()
   const { push } = useRouter()
 
