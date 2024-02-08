@@ -9,7 +9,6 @@ import { Header } from '@src/component/Header/Header'
 initializeFirebaseApp()
 
 export default function App({ Component, pageProps }: AppProps) {
-  console.log(getApp())
   return (
     <AuthProvider>
       <Header />

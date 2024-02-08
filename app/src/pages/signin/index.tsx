@@ -1,8 +1,10 @@
 import { FormEvent, useState } from 'react'
-
+import { useRouter } from 'next/router'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 export const Page = () => {
+  const { push } = useRouter()
+
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [message, setMessage] = useState<string>('')
@@ -20,9 +22,7 @@ export const Page = () => {
       setEmail('')
       setPassword('')
 
-      // アラートを表示
-      setMessage('ログインに成功しました')
-      setIsAlert(true)
+      push('/')
     } catch (e) {
       setMessage('エラーが発生しました')
       setIsAlert(true)
