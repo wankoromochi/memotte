@@ -1,10 +1,6 @@
 import { FormEvent, useState } from 'react'
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  sendEmailVerification,
-} from 'firebase/auth'
-import { FirebaseError } from '@firebase/util'
+
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 export const Page = () => {
   const [email, setEmail] = useState<string>('')
@@ -12,29 +8,24 @@ export const Page = () => {
   const [message, setMessage] = useState<string>('')
   const [isAlert, setIsAlert] = useState<boolean>(false)
 
-  /** 登録ボタン押下処理 */
-  const handleSubmit = async (e: FormEvent<HTMLElement>) => {
+  /** ログインボタン押下処理 */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     try {
       const auth = getAuth()
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      await sendEmailVerification(userCredential.user)
+      await signInWithEmailAndPassword(auth, email, password)
+
+      // 成功した場合リセット
       setEmail('')
       setPassword('')
 
-      setMessage('登録が完了しました')
+      // アラートを表示
+      setMessage('ログインに成功しました')
       setIsAlert(true)
     } catch (e) {
-      if (e instanceof FirebaseError) {
-        console.log(e)
-
-        setMessage('アカウント登録に失敗しました')
-        setIsAlert(false)
-      }
+      setMessage('エラーが発生しました')
+      setIsAlert(true)
     }
   }
 
@@ -66,7 +57,7 @@ export const Page = () => {
       )}
 
       <div className="w-full max-w-xs mx-auto mt-8">
-        <h1 className="text-2xl mb-2">アカウント登録</h1>
+        <h1 className="text-2xl mb-2">ログイン</h1>
         <form
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
           onSubmit={handleSubmit}
@@ -97,7 +88,7 @@ export const Page = () => {
               Password
             </label>
             <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
               value={password}
@@ -106,16 +97,13 @@ export const Page = () => {
               }}
               placeholder="******************"
             />
-            <p className="text-red-500 text-xs italic">
-              Please choose a password.
-            </p>
           </div>
           <div className="flex items-center justify-between">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              アカウントを作成
+              ログイン
             </button>
           </div>
         </form>
