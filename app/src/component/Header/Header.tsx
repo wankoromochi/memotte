@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { useRouter } from 'next/router'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
   ArrowPathIcon,
@@ -64,6 +65,7 @@ function classNames(...classes: string[]) {
 }
 
 export const Header = () => {
+  const { push } = useRouter()
   const { user } = useAuthContext()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -73,6 +75,7 @@ export const Header = () => {
     try {
       const auth = getAuth()
       await signOut(auth)
+      push('/signin')
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e)
